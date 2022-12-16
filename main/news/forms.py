@@ -1,6 +1,6 @@
 from django import forms
 from .models import Category, News
-
+from django.core.exceptions import ValidationError
 
 class NewsForms(forms.Form):
     title = forms.CharField(max_length=150,  label='Наименование',
@@ -28,3 +28,16 @@ class NewsFormsModel(forms.ModelForm):
         model = News
         fields = ['title', 'content', 'photo', 'is_published', 'category']
 
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        if title[0].isdigit():
+            raise ValidationError('Наименование не может начинаться с цифры!')
+        return title.capitalize()
+
+    def clean_content(self):
+        content = self.cleaned_data['content']
+        if content[0].isdigit():
+            raise ValidationError('Поле контента не может начинаться с цифры!')
+        elif len(content.split()) < 3:
+            raise ValidationError("Поле контента должно содержать более 2(двух) слов!")
+        return content.capitalize()

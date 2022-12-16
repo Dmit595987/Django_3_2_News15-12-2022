@@ -1,14 +1,64 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy
+
 from .models import News, Category
 from .forms import NewsForms, NewsFormsModel
+from django.views.generic import ListView, DetailView, CreateView
 
 
-def index(request):
-    cont = {
-        'news': News.objects.all(),
-        'title': 'Список новостей',
-    }
-    return render(request, 'news/index.html', context=cont)
+
+
+
+
+class IndexNews(ListView):
+    model = News
+    template_name = 'news/home.html'
+    context_object_name = 'news'
+    # extra_context = {'title': 'Главная'} используем для передачи только статики
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Главная страница'
+        return context
+
+    def get_queryset(self):
+        return News.objects.filter(is_published=True).select_related('category')
+
+
+class CategoryNews(ListView):
+    model = News
+    template_name = 'news/home.html'
+    context_object_name = 'news'
+    allow_empty = False #отвечает за вывод пустых категорий
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # ТАК неправильно!!!
+        # if self.object_list:
+        #     context['title'] = f'Категория: {self.object_list[0].category}'
+        # else:
+        #     context['title'] = f'Категория: не имеет статей!'
+        context['title'] = f'Категория: {Category.objects.get(pk=self.kwargs["category_id"])}'
+        return context
+
+    def get_queryset(self):
+        return News.objects.filter(category_id=self.kwargs['category_id'], is_published=True).select_related('category')
+#
+
+# def index(request):
+#     cont = {
+#         'news': News.objects.all(),
+#         'title': 'Список новостей',
+#     }
+#     return render(request, 'news/index.html', context=cont)
+
+
+class ViewNews(DetailView):
+    model = News
+    # pk_url_kwarg = 'news_id'
+    # template_name = 'news/news_detail.html' # используется по умолчанию
+    context_object_name = 'news_item'
+
 
 
 def get_category(request, category_id):
@@ -47,3 +97,10 @@ def add_news_1(request):
     else:
         form = NewsFormsModel()
     return render(request, 'news/add_news_1.html', {'form': form})
+
+
+class CreateNews(CreateView):
+    form_class = NewsFormsModel
+    template_name = 'news/add_news_2.html'
+    # success_url = reverse_lazy('index') или гет_асолют из модели вернёт на созданную
+
