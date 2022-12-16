@@ -1,14 +1,54 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import News, Category
 from .forms import NewsForms, NewsFormsModel
+from django.views.generic import ListView
 
 
-def index(request):
-    cont = {
-        'news': News.objects.all(),
-        'title': 'Список новостей',
-    }
-    return render(request, 'news/index.html', context=cont)
+
+
+
+
+class IndexNews(ListView):
+    model = News
+    template_name = 'news/home.html'
+    context_object_name = 'news'
+    # extra_context = {'title': 'Главная'} используем для передачи только статики
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Главная страница'
+        return context
+
+    def get_queryset(self):
+        return News.objects.filter(is_published=True)
+
+
+class CategoryNews(ListView):
+    model = News
+    template_name = 'news/home.html'
+    context_object_name = 'news'
+    allow_empty = False
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # ТАК неправильно!!!
+        # if self.object_list:
+        #     context['title'] = f'Категория: {self.object_list[0].category}'
+        # else:
+        #     context['title'] = f'Категория: не имеет статей!'
+        context['title'] = f'Категория: {Category.objects.get(pk=self.kwargs["category_id"])}'
+        return context
+
+    def get_queryset(self):
+        return News.objects.filter(category_id=self.kwargs['category_id'], is_published=True)
+#
+
+# def index(request):
+#     cont = {
+#         'news': News.objects.all(),
+#         'title': 'Список новостей',
+#     }
+#     return render(request, 'news/index.html', context=cont)
 
 
 def get_category(request, category_id):
