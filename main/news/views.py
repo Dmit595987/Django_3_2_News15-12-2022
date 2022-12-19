@@ -1,9 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy
-
 from .models import News, Category
 from .forms import NewsForms, NewsFormsModel
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView
 
 
 
@@ -22,14 +20,14 @@ class IndexNews(ListView):
         return context
 
     def get_queryset(self):
-        return News.objects.filter(is_published=True).select_related('category')
+        return News.objects.filter(is_published=True)
 
 
 class CategoryNews(ListView):
     model = News
     template_name = 'news/home.html'
     context_object_name = 'news'
-    allow_empty = False #отвечает за вывод пустых категорий
+    allow_empty = False
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -42,7 +40,7 @@ class CategoryNews(ListView):
         return context
 
     def get_queryset(self):
-        return News.objects.filter(category_id=self.kwargs['category_id'], is_published=True).select_related('category')
+        return News.objects.filter(category_id=self.kwargs['category_id'], is_published=True)
 #
 
 # def index(request):
@@ -51,14 +49,6 @@ class CategoryNews(ListView):
 #         'title': 'Список новостей',
 #     }
 #     return render(request, 'news/index.html', context=cont)
-
-
-class ViewNews(DetailView):
-    model = News
-    # pk_url_kwarg = 'news_id'
-    # template_name = 'news/news_detail.html' # используется по умолчанию
-    context_object_name = 'news_item'
-
 
 
 def get_category(request, category_id):
@@ -97,10 +87,3 @@ def add_news_1(request):
     else:
         form = NewsFormsModel()
     return render(request, 'news/add_news_1.html', {'form': form})
-
-
-class CreateNews(CreateView):
-    form_class = NewsFormsModel
-    template_name = 'news/add_news_2.html'
-    # success_url = reverse_lazy('index') или гет_асолют из модели вернёт на созданную
-
