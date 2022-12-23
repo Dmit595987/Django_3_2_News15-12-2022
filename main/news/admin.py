@@ -10,10 +10,12 @@ class NewsAdmin(admin.ModelAdmin):
     list_filter = ('category', 'is_published', )
 
 
+
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'title')
     list_display_links = ('id', 'title')
     search_fields = ('title',)
+
 
 
 admin.site.register(News, NewsAdmin)

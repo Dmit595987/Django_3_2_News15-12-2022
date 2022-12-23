@@ -3,6 +3,7 @@ from django.urls import reverse
 
 class News(models.Model):
     title = models.CharField(max_length=150, verbose_name='Наименование')
+
     content = models.TextField(blank=True, verbose_name='Контент')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     updated_at = models.DateTimeField(auto_now=True,  verbose_name='Дата обновления')
@@ -25,6 +26,7 @@ class News(models.Model):
 
 class Category(models.Model):
     title = models.CharField(max_length=150, db_index=True, verbose_name='Наименование Категории')
+
 
     def get_absolute_url(self):
         return reverse('get_category', kwargs={'category_id': self.pk})

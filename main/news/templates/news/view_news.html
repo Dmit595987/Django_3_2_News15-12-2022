@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-{{ news_item.title }}
+Новость: {{ news_item.title }}
 {% endblock %}
 
 {% block sidebar %}
@@ -14,7 +14,8 @@
 
         <div class="card mb-3">
             <div class="card-header">
-               Категория: {{ news_item.category.title }}
+
+               Категория: <a href="{{ news_item.category.get_absolute_url }}">{{ news_item.category }}</a>
             </div>
             <div class="card-body">
                 <div class="media">

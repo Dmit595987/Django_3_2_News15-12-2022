@@ -5,6 +5,7 @@
     {% get_categories  as categories %}
     {% for item in categories %}
 
-    <a href="{{ item.get_absolute_url }}" class="list-group-item list-group-item-action">{{item.title}}</a>
+    <a href="{{ item.get_absolute_url }}" class="list-group-item list-group-item-action">{{item.title}} {{item.news__count}}</a>
+
     {% endfor %}
 </div>

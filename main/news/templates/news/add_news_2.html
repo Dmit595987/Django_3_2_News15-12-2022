@@ -11,7 +11,7 @@
 {% block content %}
 
 <h1>Добавить новость</h1>
-<form action="{% url 'add_news_1' %}" method='post' enctype="multipart/form-data">
+<form action="{% url 'add_news_2' %}" method='post' enctype="multipart/form-data">
     {% csrf_token %}
             {{ form.as_p }}
     <br>

@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'news.apps.NewsConfig',
-    'debug_toolbar',
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
@@ -133,4 +133,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-INTERNAL_IPS = ["127.0.0.1", ]
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
